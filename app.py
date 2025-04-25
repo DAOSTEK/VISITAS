@@ -247,7 +247,65 @@ def borrar_visitas():
     return jsonify({'success': True})
 
 
+@app.route('/guardar_ine', methods=['POST'])
+def guardar_ine():
+    try:
+        data = request.get_json()
+        if not data or 'image' not in data:
+            return jsonify({'success': False})
+        
+        # Obtener la imagen en base64
+        image_data = data['image'].split(',')[1]  # Remover el prefijo
+        image_bytes = base64.b64decode(image_data)
+        
+        # Guardar la imagen
+        ahora = datetime.datetime.now()
+        timestamp = ahora.strftime('%Y%m%d%H%M%S')
+        imagen_filename = f'ine_{timestamp}.jpg'
+        imagen_path = os.path.join(app.config['UPLOAD_FOLDER'], imagen_filename)
+        
+        with open(imagen_path, 'wb') as f:
+            f.write(image_bytes)
+        
+        return jsonify({
+            'success': True,
+            'fecha': ahora.strftime('%Y-%m-%d'),
+            'hora': ahora.strftime('%H:%M:%S'),
+            'imagen_path': imagen_path
+        })
+        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({'success': False})
 
+@app.route('/guardar_selfie', methods=['POST'])
+def guardar_selfie():
+    try:
+        data = request.get_json()
+        if not data or 'image' not in data:
+            return jsonify({'success': False})
+        
+        # Obtener la imagen en base64
+        image_data = data['image'].split(',')[1]  # Remover el prefijo
+        image_bytes = base64.b64decode(image_data)
+        
+        # Guardar la imagen
+        ahora = datetime.datetime.now()
+        timestamp = ahora.strftime('%Y%m%d%H%M%S')
+        imagen_filename = f'selfie_{timestamp}.jpg'
+        imagen_path = os.path.join(app.config['UPLOAD_FOLDER'], imagen_filename)
+        
+        with open(imagen_path, 'wb') as f:
+            f.write(image_bytes)
+        
+        return jsonify({
+            'success': True,
+            'imagen_path': imagen_path
+        })
+        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({'success': False})
 
 
 if __name__ == '__main__':
